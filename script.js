@@ -43,10 +43,64 @@ hiliteProgressBarBudgetMarkerImg.addEventListener(
   },
   true
 );
+
+hiliteProgressBarBudgetMarkerImg.addEventListener(
+  "touchdown",
+  function (e) {
+    isMouseDownHiliteProgressBarBudgetMarker = true;
+    offsetHiliteProgressBarBudgetMarkerImg = [
+      hiliteProgressBarBudgetMarkerImg.offsetLeft - e.clientX,
+    ];
+  },
+  true
+);
+
+document.addEventListener(
+  "touchup",
+  function () {
+    isMouseDownHiliteProgressBarBudgetMarker = false;
+  },
+  true
+);
+
 document.addEventListener(
   "mouseup",
   function () {
     isMouseDownHiliteProgressBarBudgetMarker = false;
+  },
+  true
+);
+
+document.addEventListener(
+  "touchmove",
+  function (e) {
+    e.preventDefault();
+    if (isMouseDownHiliteProgressBarBudgetMarker) {
+      const hiliteProgressBarBudgetMarkerImgStyleLeft =
+        e.clientX + offsetHiliteProgressBarBudgetMarkerImg[0];
+      setText(
+        "current-market",
+        " = " + hiliteProgressBarBudgetMarkerImgStyleLeft + "px"
+      );
+      setText(
+        "right-circle",
+        " = " + hiliteProgressBarBudgetMarkerGreenRightCircle.offsetLeft + "px"
+      );
+      if (hiliteProgressBarBudgetMarkerImgStyleLeft <= -10) {
+        isMouseDownHiliteProgressBarBudgetMarker = false;
+        return;
+      }
+      if (
+        hiliteProgressBarBudgetMarkerImgStyleLeft >=
+        hiliteProgressBarBudgetMarkerGreenRightCircle.offsetLeft + 5
+      ) {
+        isMouseDownHiliteProgressBarBudgetMarker = false;
+        return;
+      }
+      changeProgressBarValue(hiliteProgressBarBudgetMarkerImgStyleLeft);
+      hiliteProgressBarBudgetMarkerImg.style.left =
+        hiliteProgressBarBudgetMarkerImgStyleLeft + "px";
+    }
   },
   true
 );
