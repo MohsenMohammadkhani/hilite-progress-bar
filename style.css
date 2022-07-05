@@ -1,0 +1,51 @@
+html,
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+#hilite-progress-bar-budget-container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+#hilite-progress-bar-budget {
+  width: 100%;
+  background-color: #ccc;
+  cursor: pointer;
+  position: relative;
+}
+
+#hilite-progress-bar-budget div.progress-bar {
+  height: 3px;
+  background-color: green;
+}
+
+#hilite-progress-bar-budget-marker img {
+  position: absolute;
+  cursor: pointer;
+  top: 3px;
+  transform: translateY(-100%);
+  left: -10px;
+  z-index: 99;
+}
+
+.hilite-progress-bar-budget-marker-green-circle {
+  height: 25px;
+  width: 25px;
+  background-color: green;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.hilite-progress-bar-budget-marker-green-circle.left-circle {
+  left: -10px;
+  top: 3px;
+  transform: translateY(-100%);
+}
+
+.hilite-progress-bar-budget-marker-green-circle.right-circle {
+  right: -10px;
+  top: 3px;
+  transform: translateY(-100%);
+}
