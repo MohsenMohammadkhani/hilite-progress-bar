@@ -3,21 +3,15 @@ const hiliteProgressBarBudget = document.querySelector(
   "#hilite-progress-bar-budget"
 );
 const hiliteProgressBarBudgetWidth = hiliteProgressBarBudget.offsetWidth;
-
 const hiliteProgressBarBudgetGreenBar = document.querySelector(
   "#hilite-progress-bar-budget div.progress-bar"
 );
-
 const hiliteProgressBarBudgetMarkerImgContainer = document.querySelector(
   "#hilite-progress-bar-budget-marker"
 );
-
 const hiliteProgressBarBudgetMarkerImg = document.querySelector(
   "#hilite-progress-bar-budget-marker img "
 );
-let hiliteProgressBarBudgetMarkerImgLeft;
-let isMouseDownHiliteProgressBarBudgetMarker = false;
-
 const hiliteProgressBarBudgetMarkerGreenRightCircle = document.querySelector(
   ".hilite-progress-bar-budget-marker-green-circle.right-circle"
 );
@@ -25,14 +19,16 @@ const resetButton = document.querySelector("#reset");
 
 let currentWidthPercentHiliteProgressBarBudgetGreenBar;
 let offsetHiliteProgressBarBudgetMarkerImg = [0];
+let hiliteProgressBarBudgetMarkerImgLeft;
+let isMouseDownHiliteProgressBarBudgetMarker = false;
+let activeInMobileInMobile = false;
+let currentXMobile;
+let initialXMobile;
+let xOffsetMobile = 0;
 
 function setValueInProgressBar(newValue) {
   progressBar.style.width = newValue + "%";
 }
-
-resetButton.addEventListener("click", () => {
-  hiliteProgressBarBudgetMarkerImg.style.left = "200px";
-});
 
 //==============================
 // start darg market on desktop
@@ -40,6 +36,7 @@ resetButton.addEventListener("click", () => {
 hiliteProgressBarBudgetMarkerImg.addEventListener(
   "mousedown",
   function (e) {
+    e.preventDefault();
     isMouseDownHiliteProgressBarBudgetMarker = true;
     offsetHiliteProgressBarBudgetMarkerImg = [
       hiliteProgressBarBudgetMarkerImg.offsetLeft - e.clientX,
@@ -60,31 +57,24 @@ document.addEventListener(
   "mousemove",
   function (e) {
     e.preventDefault();
-    if (isMouseDownHiliteProgressBarBudgetMarker) {
-      const hiliteProgressBarBudgetMarkerImgStyleLeft =
-        e.clientX + offsetHiliteProgressBarBudgetMarkerImg[0];
-      // setText(
-      //   "current-market",
-      //   " = " + hiliteProgressBarBudgetMarkerImgStyleLeft + "px"
-      // );
-      // setText(
-      //   "right-circle",
-      //   " = " + hiliteProgressBarBudgetMarkerGreenRightCircle.offsetLeft + "px"
-      // );
-
-      if (
-        checkMarketWantsMoveFromBorderDesktop(
-          hiliteProgressBarBudgetMarkerImgStyleLeft
-        )
-      ) {
-        isMouseDownHiliteProgressBarBudgetMarker = false;
-        return;
-      }
-
-      changeProgressBarValue(hiliteProgressBarBudgetMarkerImgStyleLeft);
-      hiliteProgressBarBudgetMarkerImg.style.left =
-        hiliteProgressBarBudgetMarkerImgStyleLeft + "px";
+    if (!isMouseDownHiliteProgressBarBudgetMarker) {
+      return;
     }
+
+    const hiliteProgressBarBudgetMarkerImgStyleLeft =
+      e.clientX + offsetHiliteProgressBarBudgetMarkerImg[0];
+    if (
+      checkMarketWantsMoveFromBorderDesktop(
+        hiliteProgressBarBudgetMarkerImgStyleLeft
+      )
+    ) {
+      isMouseDownHiliteProgressBarBudgetMarker = false;
+      return;
+    }
+
+    changeProgressBarValue(hiliteProgressBarBudgetMarkerImgStyleLeft);
+    hiliteProgressBarBudgetMarkerImg.style.left =
+      hiliteProgressBarBudgetMarkerImgStyleLeft + "px";
   },
   true
 );
@@ -125,47 +115,45 @@ hiliteProgressBarBudgetMarkerImgContainer.addEventListener(
   false
 );
 
-let active = false;
-let currentX;
-let initialX;
-let xOffset = 0;
-
 function dragMobileStart(e) {
-  initialX = e.touches[0].clientX - xOffset;
+  initialXMobile = e.touches[0].clientX - xOffsetMobile;
   if (e.target === hiliteProgressBarBudgetMarkerImg) {
-    active = true;
+    activeInMobile = true;
   }
 }
 
 function dragMobileEnd() {
-  initialX = currentX;
-  active = false;
+  initialXMobile = currentXMobile;
+  activeInMobile = false;
 }
 
 function dragMobile(e) {
-  if (!active) {
+  if (!activeInMobile) {
     return;
   }
   e.preventDefault();
-  currentX = e.touches[0].clientX - initialX;
+  currentXMobile = e.touches[0].clientX - initialXMobile;
 
-  xOffset = currentX;
+  xOffsetMobile = currentXMobile;
 
-  if (checkMarketWantsMoveFromBorderMobile(currentX)) {
+  if (checkMarketWantsMoveFromBorderMobile(currentXMobile)) {
     return;
   }
 
-  setText("current-market", " = " + currentX + "px");
-  changeProgressBarValue(currentX);
-  hiliteProgressBarBudgetMarkerImg.style.left = currentX + "px";
+  setText("current-market", " = " + currentXMobile + "px");
+  changeProgressBarValue(currentXMobile);
+  hiliteProgressBarBudgetMarkerImg.style.left = currentXMobile + "px";
 }
 
-const checkMarketWantsMoveFromBorderMobile = (currentX) => {
-  if (currentX < -5) {
+const checkMarketWantsMoveFromBorderMobile = (currentXMobile) => {
+  if (currentXMobile < -5) {
     return true;
   }
 
-  if (hiliteProgressBarBudgetMarkerGreenRightCircle.offsetLeft + 5 < currentX) {
+  if (
+    hiliteProgressBarBudgetMarkerGreenRightCircle.offsetLeft + 5 <
+    currentXMobile
+  ) {
     return true;
   }
   return false;
