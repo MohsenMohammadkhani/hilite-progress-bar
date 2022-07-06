@@ -201,6 +201,7 @@ function dragMobile(e) {
   }
 
   changeProgressBarValue(currentXMobile);
+  changeBudgeDaily(currentXMobile)
   hiliteProgressBarBudgetMarkerImg.style.left = currentXMobile + "px";
 }
 
