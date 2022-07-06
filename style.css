@@ -30,8 +30,8 @@ body {
 }
 
 .hilite-progress-bar-budget-marker-green-circle {
-  height: 25px;
-  width: 25px;
+  height: 27.5px;
+  width: 27.5px;
   background-color: green;
   border-radius: 50%;
   position: absolute;

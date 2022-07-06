@@ -15,7 +15,22 @@ const hiliteProgressBarBudgetMarkerImg = document.querySelector(
 const hiliteProgressBarBudgetMarkerGreenRightCircle = document.querySelector(
   ".hilite-progress-bar-budget-marker-green-circle.right-circle"
 );
-const resetButton = document.querySelector("#reset");
+
+const budgeDailyElement = document.querySelector("#budge-daily");
+const budgeMonthlyElement = document.querySelector("#budge-monthly");
+const countShowElement = document.querySelector("#count-show");
+const timeShowElement = document.querySelector("#time-show");
+
+const minBudgeDaily = 120 * 1000;
+const maxBudgeDaily = 30 * 1000 * 1000;
+const coefficientConvertMinBudgeMonthlyToCountShow = 0.029;
+const coefficientConvertMinBudgeMonthlyToTimeShow = 0.004;
+
+const unitNumber = {
+  THOUSAND: "هزار",
+  MILLION: "میلیون",
+  MILLIARD: "میلیارد",
+};
 
 let currentWidthPercentHiliteProgressBarBudgetGreenBar;
 let offsetHiliteProgressBarBudgetMarkerImg = [0];
@@ -28,6 +43,50 @@ let xOffsetMobile = 0;
 
 function setValueInProgressBar(newValue) {
   progressBar.style.width = newValue + "%";
+}
+
+const toFormatFinanceNumber = (number) => {
+  return new Intl.NumberFormat().format(number).replace(".", ",");
+};
+
+const getUnitNumber = (number) => {
+  let unit = "";
+  const numberLength = number.length;
+  switch (true) {
+    case numberLength > 3 && numberLength < 7:
+      unit = unitNumber.THOUSAND;
+      break;
+    case numberLength > 6 && numberLength < 10:
+      unit = unitNumber.MILLION;
+      break;
+    case numberLength > 9:
+      unit = unitNumber.MILLIARD;
+      break;
+  }
+  return unit;
+};
+
+function toPersianNum(num, dontTrim) {
+  if (num == null) {
+    return;
+  }
+
+  var i = 0,
+    dontTrim = dontTrim || false,
+    num = dontTrim ? num.toString() : num.toString().trim(),
+    len = num.length,
+    res = "",
+    pos,
+    persianNumbers =
+      typeof persianNumber == "undefined"
+        ? ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"]
+        : persianNumbers;
+
+  for (; i < len; i++)
+    if ((pos = persianNumbers[num.charAt(i)])) res += pos;
+    else res += num.charAt(i);
+
+  return res;
 }
 
 //==============================
@@ -73,6 +132,7 @@ document.addEventListener(
     }
 
     changeProgressBarValue(hiliteProgressBarBudgetMarkerImgStyleLeft);
+    changeBudgeDaily(hiliteProgressBarBudgetMarkerImgStyleLeft);
     hiliteProgressBarBudgetMarkerImg.style.left =
       hiliteProgressBarBudgetMarkerImgStyleLeft + "px";
   },
@@ -161,13 +221,115 @@ const checkMarketWantsMoveFromBorderMobile = (currentXMobile) => {
 // end darg market on mobile
 //==============================
 
+const initMaxAndMinBudge = () => {
+  document.querySelector("#min-budge-daily").textContent = toPersianNum(
+    toFormatFinanceNumber(minBudgeDaily)
+  );
+  document.querySelector("#max-budge-daily").textContent = toPersianNum(
+    toFormatFinanceNumber(maxBudgeDaily)
+  );
+  budgeDailyElement.textContent = toPersianNum(
+    toFormatFinanceNumber(minBudgeDaily)
+  );
+  const minBudgeMonthly = minBudgeDaily * 30;
+
+  budgeMonthlyElement.textContent = toPersianNum(
+    toFormatFinanceNumber(minBudgeMonthly)
+  );
+  countShowElement.textContent = toPersianNum(
+    toFormatFinanceNumber(
+      minBudgeMonthly * coefficientConvertMinBudgeMonthlyToCountShow
+    )
+  );
+  timeShowElement.textContent = toPersianNum(
+    toFormatFinanceNumber(
+      minBudgeMonthly * coefficientConvertMinBudgeMonthlyToTimeShow
+    )
+  );
+};
+
+initMaxAndMinBudge();
+
+const changeBudgeDaily = (hiliteProgressBarBudgetMarkerImgStyleLeft) => {
+  if (!checkValidValueProgressBar(hiliteProgressBarBudgetMarkerImgStyleLeft)) {
+    return;
+  }
+
+  let budgeDaily = calculateBudgetDaily(
+    hiliteProgressBarBudgetMarkerImgStyleLeft
+  );
+
+  if (budgeDaily < minBudgeDaily) {
+    budgeDaily = minBudgeDaily;
+  }
+  setNumberToBudgeDailyElement(budgeDaily);
+};
+
+function calculateBudgetDaily(hiliteProgressBarBudgetMarkerImgStyleLeft) {
+  const totalProgressBarBudgetStyleLeft =
+    hiliteProgressBarBudgetMarkerGreenRightCircle.offsetLeft;
+  const percentProgressBarBudgetStyleLeft = Math.ceil(
+    (hiliteProgressBarBudgetMarkerImgStyleLeft * 100) /
+      totalProgressBarBudgetStyleLeft
+  );
+  return Math.ceil((percentProgressBarBudgetStyleLeft * maxBudgeDaily) / 100);
+}
+
+function setNumberToBudgeDailyElement(budgeDaily) {
+  budgeDailyElement.textContent = toPersianNum(
+    toFormatFinanceNumber(budgeDaily)
+  );
+  const budgeMonthly = budgeDaily * 30;
+  setNumberToBudgeMonthlyElement(budgeMonthly);
+  setNumberToCountShowElement(budgeMonthly);
+  setNumberToTimeShowElement(budgeMonthly);
+}
+
+function setNumberToBudgeMonthlyElement(budgeMonthly) {
+  budgeMonthlyElement.textContent = toPersianNum(
+    toFormatFinanceNumber(budgeMonthly)
+  );
+}
+
+function setNumberToCountShowElement(budgeMonthly) {
+  countShowElement.textContent = toPersianNum(
+    toFormatFinanceNumber(
+      budgeMonthly * coefficientConvertMinBudgeMonthlyToCountShow
+    )
+  );
+}
+
+function setNumberToTimeShowElement(budgeMonthly) {
+  timeShowElement.textContent = toPersianNum(
+    toFormatFinanceNumber(
+      Math.floor(
+        (budgeMonthly * coefficientConvertMinBudgeMonthlyToTimeShow) / 60
+      )
+    )
+  );
+}
+
+const checkValidValueProgressBar = (
+  hiliteProgressBarBudgetMarkerImgStyleLeft
+) => {
+  if (hiliteProgressBarBudgetMarkerImgStyleLeft <= 0) {
+    setNumberToBudgeDailyElement(minBudgeDaily);
+    return false;
+  }
+
+  if (
+    hiliteProgressBarBudgetMarkerImgStyleLeft >
+    hiliteProgressBarBudgetMarkerGreenRightCircle.offsetLeft
+  ) {
+    setNumberToBudgeDailyElement(maxBudgeDaily);
+    return false;
+  }
+  return true;
+};
+
 const changeProgressBarValue = (newValue) => {
   const newValuePercent = (newValue * 100) / hiliteProgressBarBudgetWidth;
   currentWidthPercentHiliteProgressBarBudgetGreenBar =
     hiliteProgressBarBudgetGreenBar.style.width.replace("%", "");
   setValueInProgressBar(newValuePercent);
-};
-
-const setText = (id, text) => {
-  document.querySelector("#" + id).textContent = text;
 };
