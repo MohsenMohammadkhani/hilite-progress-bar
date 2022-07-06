@@ -94,3 +94,7 @@ body {
     flex-direction: column;
   }
 }
+
+.letter-spacing-finance-number {
+  letter-spacing: 3px;
+}

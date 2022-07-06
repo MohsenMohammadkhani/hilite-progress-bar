@@ -26,12 +26,6 @@ const maxBudgeDaily = 30 * 1000 * 1000;
 const coefficientConvertMinBudgeMonthlyToCountShow = 0.029;
 const coefficientConvertMinBudgeMonthlyToTimeShow = 0.004;
 
-const unitNumber = {
-  THOUSAND: "هزار",
-  MILLION: "میلیون",
-  MILLIARD: "میلیارد",
-};
-
 let currentWidthPercentHiliteProgressBarBudgetGreenBar;
 let offsetHiliteProgressBarBudgetMarkerImg = [0];
 let hiliteProgressBarBudgetMarkerImgLeft;
@@ -47,23 +41,6 @@ function setValueInProgressBar(newValue) {
 
 const toFormatFinanceNumber = (number) => {
   return new Intl.NumberFormat().format(number).replace(".", ",");
-};
-
-const getUnitNumber = (number) => {
-  let unit = "";
-  const numberLength = number.length;
-  switch (true) {
-    case numberLength > 3 && numberLength < 7:
-      unit = unitNumber.THOUSAND;
-      break;
-    case numberLength > 6 && numberLength < 10:
-      unit = unitNumber.MILLION;
-      break;
-    case numberLength > 9:
-      unit = unitNumber.MILLIARD;
-      break;
-  }
-  return unit;
 };
 
 function toPersianNum(num, dontTrim) {
