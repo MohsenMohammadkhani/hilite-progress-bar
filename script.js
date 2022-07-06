@@ -140,7 +140,6 @@ function dragMobile(e) {
     return;
   }
 
-  setText("current-market", " = " + currentXMobile + "px");
   changeProgressBarValue(currentXMobile);
   hiliteProgressBarBudgetMarkerImg.style.left = currentXMobile + "px";
 }
