@@ -4,6 +4,13 @@ body {
   padding: 0px;
 }
 
+#hilite-progress-bar-description {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 120px;
+}
+
 #hilite-progress-bar-budget-container {
   width: 80%;
   margin: 0 auto;
@@ -30,21 +37,21 @@ body {
 }
 
 .hilite-progress-bar-budget-marker-green-circle {
-  height: 27.5px;
-  width: 27.5px;
+  height: 35px;
+  width: 35px;
   background-color: green;
   border-radius: 50%;
   position: absolute;
 }
 
 .hilite-progress-bar-budget-marker-green-circle.left-circle {
-  left: -10px;
+  left: -15px;
   top: 3px;
   transform: translateY(-100%);
 }
 
 .hilite-progress-bar-budget-marker-green-circle.right-circle {
-  right: -10px;
+  right: -15px;
   top: 3px;
   transform: translateY(-100%);
 }
@@ -92,6 +99,16 @@ body {
   #hilite-progress-bar-number {
     display: flex;
     flex-direction: column;
+  }
+
+  #hilite-progress-bar-budget-marker img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .hilite-progress-bar-budget-marker-green-circle {
+    height: 25px;
+    width: 25px;
   }
 }
 

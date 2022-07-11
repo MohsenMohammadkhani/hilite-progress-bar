@@ -21,8 +21,8 @@ const budgeMonthlyElement = document.querySelector("#budge-monthly");
 const countShowElement = document.querySelector("#count-show");
 const timeShowElement = document.querySelector("#time-show");
 
-const minBudgeDaily = 120 * 1000;
-const maxBudgeDaily = 30 * 1000 * 1000;
+const minBudgeDaily = 50 * 1000;
+const maxBudgeDaily = 1 * 1000 * 1000;
 const coefficientConvertMinBudgeMonthlyToCountShow = 0.029;
 const coefficientConvertMinBudgeMonthlyToTimeShow = 0.004;
 
